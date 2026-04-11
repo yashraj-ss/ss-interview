@@ -23,13 +23,9 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
 .scr{display:none}
 .scr.on{display:block;animation:fi .3s ease}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* LOADING */
 .ld-wrap{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--mu);font-size:14px;text-align:center;padding:20px}
 .spin{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--t);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* START */
 .sw{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;padding:32px 20px}
 .sc{background:var(--s);border:1px solid var(--bd);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);max-width:700px;width:100%;overflow:hidden}
 .sc-h{background:var(--t);padding:32px 36px 28px;color:#fff}
@@ -56,8 +52,6 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
 .dcl{font-size:10px;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-weight:500}
 .dcv{font-size:13px;font-weight:600;line-height:1.3}
 .dcs{font-size:11px;color:var(--mu);margin-top:2px}
-
-/* NAME */
 .name-sec{border-top:1px solid var(--bd);padding-top:22px}
 .name-title{font-size:13px;font-weight:600;margin-bottom:4px}
 .name-sub{font-size:13px;color:var(--mu);margin-bottom:14px}
@@ -74,8 +68,6 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
 .btn-start:disabled{opacity:.4;cursor:not-allowed}
 .btn-start svg{transition:transform .15s}
 .btn-start:hover:not(:disabled) svg{transform:translateX(3px)}
-
-/* EXAM */
 .ew{max-width:760px;margin:0 auto;padding:28px 24px 60px}
 .pw{display:flex;align-items:center;gap:10px;margin-bottom:20px}
 .pbar{flex:1;height:4px;background:var(--bd);border-radius:2px}
@@ -125,12 +117,10 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
   <div class="timer" id="timer">60:00</div>
 </div>
 
-<!-- LOADING -->
 <div class="scr on" id="scr-load">
   <div class="ld-wrap"><div class="spin"></div><div>Loading your assignment…</div></div>
 </div>
 
-<!-- START -->
 <div class="scr" id="scr-start">
   <div class="sw"><div class="sc">
     <div class="sc-h">
@@ -166,7 +156,6 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
   </div></div>
 </div>
 
-<!-- EXAM -->
 <div class="scr" id="scr-exam">
   <div class="ew">
     <div id="done-banner" style="display:none" class="done-banner">
@@ -187,36 +176,48 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
 </div>
 
 <script>
-/* ══ GITHUB CONFIG ══
-   ADMIN: After completing Setup in admin.html, fill in the three values below.
-   Then re-upload this file to your GitHub repo. Do this once — it works for all candidates forever.
-*/
-const GH_USER  = 'yashraj-ss';   // e.g. 'rajesh-sharma'
-const GH_REPO  = 'ss-interview';            // your repo name
-const GH_TOKEN = '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';      // the token you created in Setup Step 4
+/* ══════════════════════════════════════════════════════
+   CONFIGURATION — admin fills in GH_USER and GH_REPO only.
+   NO TOKEN in this file. Ever. Reading uses public URL.
+   Writing uses GitHub Issues API (public, no auth needed).
+══════════════════════════════════════════════════════ */
+const GH_USER = 'yashraj-ss';  // e.g. 'rajesh-sharma'
+const GH_REPO = 'ss-interview';          // your repo name — keep as-is if you named it ss-interview
 
-function loadCreds(){}  // credentials are hardcoded above, nothing to load
-function hasCreds(){return GH_USER!=='YOUR_GITHUB_USERNAME'&&GH_TOKEN!=='YOUR_GITHUB_TOKEN';}
-function ghH(){return{'Authorization':'token '+GH_TOKEN,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};}
-
-async function ghGet(path){
-  const r=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`,{headers:ghH()});
-  if(!r.ok)throw new Error('Read failed');
-  const j=await r.json();
-  return{content:JSON.parse(atob(j.content.replace(/\n/g,''))),sha:j.sha};
+/* Reading config: uses raw public URL — no token, no auth, works for everyone */
+async function loadConfig(){
+  const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/config.json?t=${Date.now()}`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error('Config not found');
+  return r.json();
 }
-async function ghWrite(path,content,sha,msg){
-  const body={message:msg||'update',content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};
-  if(sha)body.sha=sha;
-  const r=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`,{method:'PUT',headers:ghH(),body:JSON.stringify(body)});
-  if(!r.ok){const e=await r.json();throw new Error(e.message);}
-  return(await r.json()).content.sha;
+
+/* Submitting answers: uses GitHub Issues API — public repos allow anyone to create issues */
+async function postSubmission(candidateName, answers){
+  const body = [
+    `**Candidate:** ${candidateName}`,
+    `**Submitted:** ${new Date().toLocaleString('en-IN')}`,
+    ``,
+    `\`\`\`json`,
+    JSON.stringify({candidateName, submittedAt: new Date().toISOString(), answers}, null, 2),
+    `\`\`\``
+  ].join('\n');
+
+  const r = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/issues`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
+    body: JSON.stringify({title:`Submission: ${candidateName} — ${new Date().toLocaleDateString('en-IN')}`, body, labels:['submission']})
+  });
+  if(!r.ok){
+    const e = await r.json();
+    throw new Error(e.message||'Submit failed');
+  }
+  return r.json();
 }
 
 /* ══ STATE ══ */
-let cfg=null,answers={},candName='',submitted=false,started=false,secsLeft=3600,timerInt=null;
-let subsSHA='',subs=[];
-const LS='ss_cand_v5';
+let cfg=null, answers={}, candName='', submitted=false, started=false, secsLeft=3600, timerInt=null;
+const LS='ss_cand_v6';
 
 function saveLS(){try{localStorage.setItem(LS,JSON.stringify({answers,candName,submitted,started,secsLeft}));}catch(e){}}
 function loadLS(){
@@ -227,19 +228,10 @@ function loadLS(){
   }catch(e){}
 }
 
-/* ══ LOAD ASSIGNMENT ══ */
-async function loadCfg(){
-  const {content}=await ghGet('config.json');
-  if(content&&content.title){
-    cfg=content;
-    if(cfg.time)secsLeft=parseInt(cfg.time)*60;
-  }
-}
-
 /* ══ RENDER START ══ */
 function renderStart(){
   if(!cfg)return;
-  document.getElementById('s-co').textContent=cfg.company||'';
+  document.getElementById('s-co').textContent=cfg.company||'SolarSquare';
   document.getElementById('s-title').innerHTML=cfg.title||'Interview Assignment';
   document.getElementById('s-role').textContent=`Role: ${cfg.role||''} · Market: ${cfg.city||''}`;
   document.getElementById('s-time').textContent=`${cfg.time||60} minutes`;
@@ -262,7 +254,9 @@ async function startExam(){
     nameEl.classList.add('err');document.getElementById('nerr').style.display='block';nameEl.focus();return;
   }
   const btn=document.getElementById('start-btn');btn.disabled=true;btn.textContent='Starting…';
-  candName=name;started=true;saveLS();
+  candName=name;started=true;
+  if(cfg.time)secsLeft=parseInt(cfg.time)*60;
+  saveLS();
   show('scr-exam');renderExam();startTimer();window.scrollTo(0,0);
 }
 
@@ -328,25 +322,15 @@ async function confirmSub(){
   document.getElementById('sub-area').style.display='none';
   document.querySelectorAll('.ata').forEach(ta=>ta.disabled=true);
   saveLS();
-  toast('Submitting…');
-
-  // Save submission to GitHub
-  if(hasCreds()){
-    try{
-      const {content,sha}=await ghGet('submissions.json');
-      const allSubs=Array.isArray(content)?content:[];
-      allSubs.push({
-        id:'sub-'+Date.now(),
-        candidateName:candName,
-        submittedAt:new Date().toISOString(),
-        answers,scores:{},aiFeedback:{}
-      });
-      await ghWrite('submissions.json',allSubs,sha,'New submission: '+candName);
-      toast('Submitted successfully!');
-    }catch(e){
-      console.error('Submit failed',e);
-      toast('Saved locally. Please refresh and try submitting again.');
-    }
+  toast('Submitting your answers…');
+  try{
+    await postSubmission(candName, answers);
+    toast('Submitted successfully!');
+  }catch(e){
+    console.error('Submit error',e);
+    // Answers are saved locally — show fallback
+    toast('Saved locally. Please screenshot your answers as a backup.');
+    document.getElementById('done-banner').innerHTML='<strong>✓ Answers saved</strong><br>Your answers are saved in this browser. The admin can retrieve them if needed.';
   }
   window.scrollTo(0,0);
 }
@@ -358,20 +342,33 @@ function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remov
 
 /* ══ INIT ══ */
 async function init(){
-  loadCreds();loadLS();
-  if(!hasCreds()){
-    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:18px;font-weight:600;margin-bottom:12px;color:var(--t)">Not yet configured</div><div style="font-size:14px;color:var(--mu);max-width:420px;line-height:1.9">To fix this:<br>1. Open <strong style="color:var(--t)">candidate.html</strong> in a text editor<br>2. Replace <strong style="color:var(--t)">YOUR_GITHUB_USERNAME</strong> and <strong style="color:var(--t)">YOUR_GITHUB_TOKEN</strong> with your actual values<br>3. Re-upload candidate.html to your GitHub repo</div></div>`;
+  loadLS();
+  if(submitted){
+    try{cfg=await loadConfig();}catch(e){}
+    if(cfg){show('scr-exam');renderExam();}
+    return;
+  }
+  if(started&&secsLeft>0){
+    try{cfg=await loadConfig();}catch(e){}
+    if(cfg){show('scr-exam');renderExam();startTimer();}
     return;
   }
   try{
-    await loadCfg();
+    cfg=await loadConfig();
+    renderStart();
+    show('scr-start');
   }catch(e){
-    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:14px;color:var(--rdc)">Could not load assignment. Please refresh the page.</div></div>`;
-    return;
+    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap">
+      <div style="font-size:18px;font-weight:600;margin-bottom:12px;color:var(--t)">Could not load assignment</div>
+      <div style="font-size:14px;color:var(--mu);max-width:380px;line-height:1.8">
+        Please check that:<br>
+        · The admin has published the assignment (Save &amp; Publish in admin.html)<br>
+        · GitHub Pages is enabled on the repo<br>
+        · The GH_USER in this file matches the actual GitHub username<br><br>
+        Try refreshing in 1–2 minutes.
+      </div>
+    </div>`;
   }
-  if(submitted){show('scr-exam');renderExam();return;}
-  if(started&&secsLeft>0){show('scr-exam');renderExam();startTimer();return;}
-  renderStart();show('scr-start');
 }
 
 init();

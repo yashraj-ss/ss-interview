@@ -181,37 +181,37 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
    NO TOKEN in this file. Ever. Reading uses public URL.
    Writing uses GitHub Issues API (public, no auth needed).
 ══════════════════════════════════════════════════════ */
-const GH_USER = 'yashraj-ss';  // e.g. 'rajesh-sharma'
-const GH_REPO = 'ss-interview';          // your repo name — keep as-is if you named it ss-interview
+const GH_USER         = 'yashraj-ss';
+const GH_REPO         = 'ss-interview';
+const GH_SUBMIT_TOKEN = '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'; // fine-grained token: Issues read+write only
 
-/* Reading config: uses raw public URL — no token, no auth, works for everyone */
+/* Reading config */
 async function loadConfig(){
-  const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/main/config.json?t=${Date.now()}`;
-  const r = await fetch(url);
-  if(!r.ok) throw new Error('Config not found');
-  return r.json();
+  // Works for both public and private repos
+  const r = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/config.json`, {
+    headers:{'Authorization':'token '+GH_SUBMIT_TOKEN,'Accept':'application/vnd.github.v3+json'}
+  });
+  if(!r.ok) throw new Error('Config not found — has admin published the assignment?');
+  const j = await r.json();
+  return JSON.parse(atob(j.content.replace(/\n/g,'')));
 }
 
-/* Submitting answers: uses GitHub Issues API — public repos allow anyone to create issues */
+/* Submitting answers via GitHub Issues */
 async function postSubmission(candidateName, answers){
   const body = [
     `**Candidate:** ${candidateName}`,
     `**Submitted:** ${new Date().toLocaleString('en-IN')}`,
-    ``,
-    `\`\`\`json`,
+    '',
+    '```json',
     JSON.stringify({candidateName, submittedAt: new Date().toISOString(), answers}, null, 2),
-    `\`\`\``
+    '```'
   ].join('\n');
-
   const r = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/issues`, {
     method: 'POST',
-    headers: {'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
+    headers:{'Authorization':'token '+GH_SUBMIT_TOKEN,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
     body: JSON.stringify({title:`Submission: ${candidateName} — ${new Date().toLocaleDateString('en-IN')}`, body, labels:['submission']})
   });
-  if(!r.ok){
-    const e = await r.json();
-    throw new Error(e.message||'Submit failed');
-  }
+  if(!r.ok){const e=await r.json();throw new Error(e.message||'Submit failed');}
   return r.json();
 }
 
@@ -343,16 +343,25 @@ function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remov
 /* ══ INIT ══ */
 async function init(){
   loadLS();
+
+  // If a previous session was fully submitted, clear it so the
+  // next candidate who opens the link gets a clean start page.
   if(submitted){
-    try{cfg=await loadConfig();}catch(e){}
-    if(cfg){show('scr-exam');renderExam();}
-    return;
+    try{localStorage.removeItem(LS);}catch(e){}
+    submitted=false;started=false;answers={};candName='';secsLeft=3600;
   }
+
+  // If mid-exam (started but not submitted), resume where they left off
   if(started&&secsLeft>0){
     try{cfg=await loadConfig();}catch(e){}
     if(cfg){show('scr-exam');renderExam();startTimer();}
+    else{
+      document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:16px;font-weight:600;margin-bottom:8px;color:var(--t)">Could not resume</div><div style="font-size:14px;color:var(--mu)">Please refresh the page.</div></div>`;
+    }
     return;
   }
+
+  // Fresh start — load config and show start screen
   try{
     cfg=await loadConfig();
     renderStart();
@@ -362,9 +371,8 @@ async function init(){
       <div style="font-size:18px;font-weight:600;margin-bottom:12px;color:var(--t)">Could not load assignment</div>
       <div style="font-size:14px;color:var(--mu);max-width:380px;line-height:1.8">
         Please check that:<br>
-        · The admin has published the assignment (Save &amp; Publish in admin.html)<br>
+        · The admin has clicked Save &amp; Publish in admin.html<br>
         · GitHub Pages is enabled on the repo<br>
-        · The GH_USER in this file matches the actual GitHub username<br><br>
         Try refreshing in 1–2 minutes.
       </div>
     </div>`;

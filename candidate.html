@@ -188,16 +188,15 @@ body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:
 
 <script>
 /* ══ GITHUB CONFIG ══
-   The candidate file reads GitHub credentials from localStorage.
-   These are written by admin.html when it saves credentials.
-   Since both files are on the same domain (github.io), localStorage is shared.
-   This means: admin sets up once → candidate file works for everyone automatically.
+   ADMIN: After completing Setup in admin.html, fill in the three values below.
+   Then re-upload this file to your GitHub repo. Do this once — it works for all candidates forever.
 */
-let GH_USER='',GH_REPO='',GH_TOKEN='';
-function loadCreds(){
-  try{const d=JSON.parse(localStorage.getItem('ss_gh')||'{}');GH_USER=d.u||'';GH_REPO=d.r||'';GH_TOKEN=d.t||'';}catch(e){}
-}
-function hasCreds(){return GH_USER&&GH_REPO&&GH_TOKEN;}
+const GH_USER  = 'yashraj-ss';   // e.g. 'rajesh-sharma'
+const GH_REPO  = 'ss-interview';            // your repo name
+const GH_TOKEN = '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';      // the token you created in Setup Step 4
+
+function loadCreds(){}  // credentials are hardcoded above, nothing to load
+function hasCreds(){return GH_USER!=='YOUR_GITHUB_USERNAME'&&GH_TOKEN!=='YOUR_GITHUB_TOKEN';}
 function ghH(){return{'Authorization':'token '+GH_TOKEN,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};}
 
 async function ghGet(path){
@@ -361,7 +360,7 @@ function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remov
 async function init(){
   loadCreds();loadLS();
   if(!hasCreds()){
-    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:18px;font-weight:600;margin-bottom:12px;color:var(--t)">Not yet configured</div><div style="font-size:14px;color:var(--mu);max-width:400px;line-height:1.8">The admin needs to open admin.html, complete the Setup tab, then upload both files to GitHub. Once done, this link will work for all candidates.</div></div>`;
+    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:18px;font-weight:600;margin-bottom:12px;color:var(--t)">Not yet configured</div><div style="font-size:14px;color:var(--mu);max-width:420px;line-height:1.9">To fix this:<br>1. Open <strong style="color:var(--t)">candidate.html</strong> in a text editor<br>2. Replace <strong style="color:var(--t)">YOUR_GITHUB_USERNAME</strong> and <strong style="color:var(--t)">YOUR_GITHUB_TOKEN</strong> with your actual values<br>3. Re-upload candidate.html to your GitHub repo</div></div>`;
     return;
   }
   try{

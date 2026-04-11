@@ -1,1 +1,156 @@
-{}
+{
+  "dp": [
+    {
+      "label": "City profile",
+      "val": "Coimbatore, Tamil Nadu",
+      "sub": "Pop. ~21L city · ~35L district"
+    },
+    {
+      "label": "Economy",
+      "val": "Industrial + residential",
+      "sub": "Textile mills, SME manufacturing, upper-mid income"
+    },
+    {
+      "label": "Avg monthly electricity bill",
+      "val": "₹2,200 – ₹3,500",
+      "sub": "Residential (500+ units/month)"
+    },
+    {
+      "label": "TN tariff (above 500 units)",
+      "val": "₹6.5 / unit",
+      "sub": "TANGEDCO domestic slab (2024)"
+    },
+    {
+      "label": "Solar irradiation",
+      "val": "5.5 – 6.0 kWh/m²/day",
+      "sub": "Among India's highest; suitable year-round"
+    },
+    {
+      "label": "PM Surya Ghar subsidy (3 kW)",
+      "val": "₹78,000",
+      "sub": "Central govt. scheme, valid FY 2025"
+    },
+    {
+      "label": "Competitor landscape",
+      "val": "2–3 local installers",
+      "sub": "No major pan-India brand currently present"
+    },
+    {
+      "label": "Competitor price (3 kW)",
+      "val": "₹1.05 – ₹1.20 lakh",
+      "sub": "Post-subsidy; quality perception varies"
+    },
+    {
+      "label": "SolarSquare cost (3 kW)",
+      "val": "~₹95,000",
+      "sub": "Incl. install, wiring, net-metering support"
+    },
+    {
+      "label": "Customer payback period",
+      "val": "4.5 – 5.5 years",
+      "sub": "At current tariff + irradiation levels"
+    },
+    {
+      "label": "Typical BTL channels",
+      "val": "RWA events, hardware stores, EMI camps",
+      "sub": "Tamil-language preference noted"
+    },
+    {
+      "label": "SolarSquare brand awareness",
+      "val": "Near zero",
+      "sub": "No prior operations in Tamil Nadu"
+    }
+  ],
+  "parts": [
+    {
+      "id": "p1",
+      "title": "Part 1 — Market entry decision",
+      "badge": "bbl",
+      "time": "20 min",
+      "questions": [
+        {
+          "id": "q1-1",
+          "text": "From the data above, identify the top 3 factors that most strongly support a Go decision. Rank them and explain why each matters.",
+          "ideal": "(1) High solar irradiation (5.5–6 kWh/m²) → strong ROI, short payback. (2) High tariff (₹6.5/unit) → large savings delta. (3) No pan-India competitor → first-mover advantage. Candidate must link each to a business outcome, not just name the metric."
+        },
+        {
+          "id": "q1-2",
+          "text": "Identify the single biggest risk of entering Coimbatore. What would you need to validate before committing resources?",
+          "ideal": "Biggest risk: near-zero brand awareness in Tamil-speaking market with local installer incumbents. Validate: (a) willingness-to-pay in target income band, (b) TANGEDCO subsidy processing speed, (c) Tamil-speaking sales/install staff availability."
+        },
+        {
+          "id": "q1-3",
+          "text": "The data shows no major pan-India brand is present yet. Does that make entry more attractive or raise a concern? Argue both sides, then take a position.",
+          "ideal": "Attractive: first-mover pricing window, brand-building opportunity. Concern: local brands may serve market adequately. Strong candidate takes a clear position and defends it. Fence-sitters score lower."
+        },
+        {
+          "id": "q1-4",
+          "text": "Final call: Go or No-Go for Coimbatore? State your decision and the one number from the data sheet that most influenced it.",
+          "ideal": "Go. Anchor: ₹6.5/unit tariff or 5.5–6 kWh/m² irradiation — drives payback to <5.5 yrs vs 6–7 yr national average. Red flag: citing brand awareness as the deciding number."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "title": "Part 2 — Pricing strategy (3 kW plant)",
+      "badge": "bgn",
+      "time": "20 min",
+      "questions": [
+        {
+          "id": "q2-1",
+          "text": "Using cost, competitor price range, and subsidy data, calculate gross margin % at: ₹1.05L, ₹1.15L, and ₹1.25L. Show your working.",
+          "ideal": "Cost = ₹95K. At ₹1.05L: margin = 9.5%. At ₹1.15L: 17.4%. At ₹1.25L: 24.0%. Strong: notes 9.5% is thin for new market; 17–24% more sustainable."
+        },
+        {
+          "id": "q2-2",
+          "text": "Coimbatore has an industrial SME base alongside residential customers. Would you charge different prices for these segments, or a single price? What's the commercial logic?",
+          "ideal": "Different prices. SMEs: higher consumption, faster payback, ROI-literate → pay premium. Residential: price-sensitive, subsidy-driven. Segmented pricing: residential ₹1.10–1.15L, SME 10–15% premium per kW."
+        },
+        {
+          "id": "q2-3",
+          "text": "SolarSquare is a new entrant with near-zero brand awareness. How should that affect pricing — penetration, at-par, or premium? Justify with one specific reason.",
+          "ideal": "At-par or slight penetration (₹1.10–1.15L). Not deep penetration — signals quality risk. Not premium — brand hasn't earned it. Must tie price to a specific value prop (e.g. 5-year monitoring, faster TANGEDCO support)."
+        },
+        {
+          "id": "q2-4",
+          "text": "Final answer: recommended post-subsidy price for a 3 kW plant in Coimbatore. In one sentence each, explain how you've balanced growth vs profitability.",
+          "ideal": "₹1.10–1.15 lakh. Growth: at-par lowers barrier for first 50–100 installs to build word-of-mouth. Profitability: 15–17% margin covers city-launch opex; breakeven in 6–9 months at 30–40 installs/month."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "title": "Part 3 — BTL channel evaluation",
+      "badge": "bam",
+      "time": "20 min",
+      "questions": [
+        {
+          "id": "q3-1",
+          "text": "List 4 metrics to evaluate BTL effectiveness — at least one leading, one lagging indicator. Define each specifically.",
+          "ideal": "Leading: (1) Lead-to-site-visit rate per event (target >15%). (2) Cost per qualified lead (target <₹2,000). Lagging: (3) BTL-attributed install rate within 60 days. (4) BTL CAC vs digital CAC at 90 days."
+        },
+        {
+          "id": "q3-2",
+          "text": "10 RWA events, ₹3L spend, 8 leads → site visits, 2 → installs at ₹1.15L each (~₹20K margin each). Calculate ROI. Acceptable at this stage? Why?",
+          "ideal": "Contribution = ₹40K. Spend = ₹3L. Net = −₹2.6L. ROI = −86.7%. Strong: ACCEPTABLE for a pilot — CAC compresses as awareness builds, LTV not captured, metric at pilot stage is lead quality trend not absolute ROI."
+        },
+        {
+          "id": "q3-3",
+          "text": "What is your clearest early signal — within 3 weeks — that this channel is worth scaling? Be specific.",
+          "ideal": "Site-visit conversion rate from BTL leads >25% within first 3 events. Means 1 in 4 interested people schedule a visit. Secondary: at least 1 install from first 3 events. Weak: 'more leads' or 'positive feedback'."
+        },
+        {
+          "id": "q3-4",
+          "text": "Customers here prefer Tamil-language communication. Name one tactical adjustment to BTL and the metric to confirm it's working.",
+          "ideal": "Adjustment: Tamil-speaking brand promoters, all collateral and WhatsApp follow-ups in Tamil. Metric: compare lead-to-visit conversion rate Tamil-first vs mixed-language outreach across matched events."
+        }
+      ]
+    }
+  ],
+  "title": "Growth & Monetisation — Manager Interview",
+  "company": "SolarSquare Energy",
+  "time": "60",
+  "city": "Coimbatore",
+  "role": "Manager, Growth",
+  "instr": "All data you need is in the Data Sheet below. State your assumptions clearly. No slides needed — write answers directly. Spend ~20 min per part. We evaluate your commercial logic, not the polish of your writing."
+}

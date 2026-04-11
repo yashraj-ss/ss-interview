@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SolarSquare — Interview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f6f3;--s:#fff;--bd:#e4e2dc;--bs:#ccc9c0;--t:#1a1916;--mu:#6b6860;--fa:#a8a59e;
+--blb:#eef4ff;--blc:#1e40af;--bld:#bfdbfe;
+--gnb:#f0fdf4;--gnc:#166534;--gnd:#bbf7d0;
+--amb:#fffbeb;--amc:#92400e;--amd:#fde68a;
+--rdb:#fef2f2;--rdc:#991b1b;--rdd:#fecaca;
+--r:10px;--rs:6px;--sh:0 1px 4px rgba(0,0,0,.07)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:var(--t);line-height:1.6;min-height:100vh}
+.bar{background:var(--s);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:50;box-shadow:var(--sh)}
+.brand{font-size:13px;font-weight:600;letter-spacing:-.02em;margin-right:auto}
+.brand span{color:var(--mu);font-weight:400}
+.timer{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:5px 14px;display:none}
+.timer.warn{color:var(--rdc);background:var(--rdb);border-color:var(--rdd);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.scr{display:none}
+.scr.on{display:block;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* LOADING */
+.ld-wrap{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--mu);font-size:14px;text-align:center;padding:20px}
+.spin{width:32px;height:32px;border:3px solid var(--bd);border-top-color:var(--t);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* START */
+.sw{min-height:calc(100vh - 52px);display:flex;align-items:center;justify-content:center;padding:32px 20px}
+.sc{background:var(--s);border:1px solid var(--bd);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);max-width:700px;width:100%;overflow:hidden}
+.sc-h{background:var(--t);padding:32px 36px 28px;color:#fff}
+.sc-logo{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:10px}
+.sc-title{font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1.25;margin-bottom:6px}
+.sc-role{font-size:14px;opacity:.7}
+.sc-body{padding:28px 36px 32px}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.mchip{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:7px 12px;font-size:13px;font-weight:500}
+.instr-box{background:var(--blb);border:1px solid var(--bld);border-radius:var(--r);padding:14px 18px;font-size:13px;color:var(--blc);line-height:1.7;margin-bottom:20px}
+.instr-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;opacity:.8}
+.sec-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin-bottom:10px}
+.pl{margin-bottom:22px}
+.pr{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.pr:last-child{border:none}
+.badge{display:inline-flex;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600}
+.bbl{background:var(--blb);color:var(--blc);border:1px solid var(--bld)}
+.bgn{background:var(--gnb);color:var(--gnc);border:1px solid var(--gnd)}
+.bam{background:var(--amb);color:var(--amc);border:1px solid var(--amd)}
+.pr-info{flex:1;font-size:13px;color:var(--mu)}
+.pr-time{font-size:12px;font-family:'DM Mono',monospace;color:var(--fa)}
+.dchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px;margin-bottom:24px}
+.dchip{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 12px}
+.dcl{font-size:10px;color:var(--fa);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-weight:500}
+.dcv{font-size:13px;font-weight:600;line-height:1.3}
+.dcs{font-size:11px;color:var(--mu);margin-top:2px}
+
+/* NAME */
+.name-sec{border-top:1px solid var(--bd);padding-top:22px}
+.name-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.name-sub{font-size:13px;color:var(--mu);margin-bottom:14px}
+.name-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.name-inp{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 14px;font-size:14px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+.name-inp:focus{border-color:var(--bs);background:#fff}
+.name-inp.err{border-color:var(--rdd);background:var(--rdb)}
+.name-err{font-size:12px;color:var(--rdc);margin-top:6px;display:none}
+.name-note{font-size:12px;color:var(--mu);margin-top:12px;line-height:1.6}
+.name-note strong{color:var(--t);font-weight:500}
+.btn-start{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;border:none;background:var(--t);color:#fff;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn-start:hover{opacity:.85}
+.btn-start:active{transform:scale(.98)}
+.btn-start:disabled{opacity:.4;cursor:not-allowed}
+.btn-start svg{transition:transform .15s}
+.btn-start:hover:not(:disabled) svg{transform:translateX(3px)}
+
+/* EXAM */
+.ew{max-width:760px;margin:0 auto;padding:28px 24px 60px}
+.pw{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.pbar{flex:1;height:4px;background:var(--bd);border-radius:2px}
+.pfil{height:100%;border-radius:2px;background:var(--t);transition:width .3s}
+.plbl{font-size:12px;color:var(--mu);white-space:nowrap;font-family:'DM Mono',monospace}
+.pdiv{display:flex;align-items:center;gap:10px;margin:22px 0 14px}
+.pline{flex:1;height:1px;background:var(--bd)}
+.qbl{background:var(--s);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;margin-bottom:12px;box-shadow:var(--sh)}
+.qhdr{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.qn{min-width:24px;height:24px;border-radius:50%;border:1px solid var(--bs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mu);flex-shrink:0;margin-top:2px;font-family:'DM Mono',monospace}
+.qtxt{font-size:14px;font-weight:500;flex:1;line-height:1.5;letter-spacing:-.01em}
+.ata{width:100%;min-height:90px;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 12px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;line-height:1.6;resize:vertical;transition:border-color .15s;outline:none}
+.ata:focus{border-color:var(--bs);background:#fff}
+.ata.filled{border-color:var(--gnd);background:#fff}
+.ata:disabled{opacity:.6;cursor:not-allowed}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 20px;border-radius:var(--rs);font-size:13px;cursor:pointer;border:1px solid var(--bs);background:var(--s);color:var(--t);font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s}
+.btn:hover{background:var(--bg)}.btn:active{transform:scale(.98)}
+.bp{background:var(--t);color:#fff;border-color:var(--t)}.bp:hover{opacity:.85;background:var(--t)}
+.sub-area{margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.done-banner{background:var(--gnb);border:1px solid var(--gnd);border-radius:var(--r);padding:20px 24px;text-align:center;color:var(--gnc);margin-bottom:24px;line-height:1.7}
+.done-banner strong{font-size:18px;font-weight:600;display:block;margin-bottom:4px;letter-spacing:-.02em}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fi .2s ease}
+.mbox{background:var(--s);border-radius:var(--r);padding:28px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.mt{font-size:16px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+.mb{font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:20px}
+.ma{display:flex;gap:8px;justify-content:flex-end}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--t);color:#fff;padding:10px 20px;border-radius:var(--r);font-size:13px;font-weight:500;transition:transform .3s;z-index:999;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(max-width:600px){.sc-h,.sc-body{padding:22px}.sc-title{font-size:20px}.ew{padding:18px 14px 50px}.bar{padding:0 14px}.dchips{grid-template-columns:1fr 1fr}.name-row{flex-direction:column}.name-inp{width:100%}}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal-bg" style="display:none">
+  <div class="mbox">
+    <div class="mt">Submit your answers?</div>
+    <div class="mb" id="modal-b">Once submitted, you cannot make changes.</div>
+    <div class="ma">
+      <button class="btn" onclick="closeModal()">Go back</button>
+      <button class="btn bp" onclick="confirmSub()">Yes, submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="brand">SolarSquare <span id="bar-role">Interview</span></div>
+  <div class="timer" id="timer">60:00</div>
+</div>
+
+<!-- LOADING -->
+<div class="scr on" id="scr-load">
+  <div class="ld-wrap"><div class="spin"></div><div>Loading your assignment…</div></div>
+</div>
+
+<!-- START -->
+<div class="scr" id="scr-start">
+  <div class="sw"><div class="sc">
+    <div class="sc-h">
+      <div class="sc-logo" id="s-co">SolarSquare Energy</div>
+      <div class="sc-title" id="s-title">Interview Assignment</div>
+      <div class="sc-role" id="s-role"></div>
+    </div>
+    <div class="sc-body">
+      <div class="meta-row">
+        <div class="mchip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 4.5v3.75l2.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span id="s-time">60 minutes</span></div>
+        <div class="mchip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Written answers only</div>
+        <div class="mchip"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 13V7l5-4 5 4v6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><rect x="6" y="9" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>No slides needed</div>
+      </div>
+      <div class="instr-box"><div class="instr-lbl">Instructions</div><div id="s-instr"></div></div>
+      <div class="pl"><div class="sec-lbl">What's inside</div><div id="s-parts"></div></div>
+      <div><div class="sec-lbl">Data sheet — market context</div><div class="dchips" id="s-chips"></div></div>
+      <div class="name-sec">
+        <div class="name-title">Ready to begin?</div>
+        <div class="name-sub">Enter your full name to start. The timer begins the moment you click Start.</div>
+        <div class="name-row">
+          <div style="flex:1;min-width:200px">
+            <input type="text" class="name-inp" id="cname" placeholder="Your full name" autocomplete="name" oninput="onNm()" onkeydown="if(event.key==='Enter')startExam()">
+            <div class="name-err" id="nerr">Please enter your first and last name.</div>
+          </div>
+          <button class="btn-start" id="start-btn" onclick="startExam()">
+            Start assignment
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="name-note"><strong>Note:</strong> The timer cannot be paused. Answers save automatically as you type.</div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- EXAM -->
+<div class="scr" id="scr-exam">
+  <div class="ew">
+    <div id="done-banner" style="display:none" class="done-banner">
+      <strong>✓ Answers submitted</strong>
+      Thank you, <span id="done-name"></span> — your responses have been recorded. You may close this tab.
+    </div>
+    <div class="pw">
+      <div style="font-size:12px;color:var(--mu)">Progress</div>
+      <div class="pbar"><div class="pfil" id="prog-fil" style="width:0%"></div></div>
+      <div class="plbl" id="prog-lbl">0 / 12</div>
+    </div>
+    <div id="e-qs"></div>
+    <div class="sub-area" id="sub-area">
+      <button class="btn bp" onclick="openModal()">Submit answers</button>
+      <div style="font-size:12px;color:var(--mu)">Answers save automatically as you type</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ GITHUB CONFIG ══
+   The candidate file reads GitHub credentials from localStorage.
+   These are written by admin.html when it saves credentials.
+   Since both files are on the same domain (github.io), localStorage is shared.
+   This means: admin sets up once → candidate file works for everyone automatically.
+*/
+let GH_USER='',GH_REPO='',GH_TOKEN='';
+function loadCreds(){
+  try{const d=JSON.parse(localStorage.getItem('ss_gh')||'{}');GH_USER=d.u||'';GH_REPO=d.r||'';GH_TOKEN=d.t||'';}catch(e){}
+}
+function hasCreds(){return GH_USER&&GH_REPO&&GH_TOKEN;}
+function ghH(){return{'Authorization':'token '+GH_TOKEN,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};}
+
+async function ghGet(path){
+  const r=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`,{headers:ghH()});
+  if(!r.ok)throw new Error('Read failed');
+  const j=await r.json();
+  return{content:JSON.parse(atob(j.content.replace(/\n/g,''))),sha:j.sha};
+}
+async function ghWrite(path,content,sha,msg){
+  const body={message:msg||'update',content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};
+  if(sha)body.sha=sha;
+  const r=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`,{method:'PUT',headers:ghH(),body:JSON.stringify(body)});
+  if(!r.ok){const e=await r.json();throw new Error(e.message);}
+  return(await r.json()).content.sha;
+}
+
+/* ══ STATE ══ */
+let cfg=null,answers={},candName='',submitted=false,started=false,secsLeft=3600,timerInt=null;
+let subsSHA='',subs=[];
+const LS='ss_cand_v5';
+
+function saveLS(){try{localStorage.setItem(LS,JSON.stringify({answers,candName,submitted,started,secsLeft}));}catch(e){}}
+function loadLS(){
+  try{
+    const p=JSON.parse(localStorage.getItem(LS)||'{}');
+    answers=p.answers||{};candName=p.candName||'';submitted=p.submitted||false;started=p.started||false;
+    if(p.secsLeft>0)secsLeft=p.secsLeft;
+  }catch(e){}
+}
+
+/* ══ LOAD ASSIGNMENT ══ */
+async function loadCfg(){
+  const {content}=await ghGet('config.json');
+  if(content&&content.title){
+    cfg=content;
+    if(cfg.time)secsLeft=parseInt(cfg.time)*60;
+  }
+}
+
+/* ══ RENDER START ══ */
+function renderStart(){
+  if(!cfg)return;
+  document.getElementById('s-co').textContent=cfg.company||'';
+  document.getElementById('s-title').innerHTML=cfg.title||'Interview Assignment';
+  document.getElementById('s-role').textContent=`Role: ${cfg.role||''} · Market: ${cfg.city||''}`;
+  document.getElementById('s-time').textContent=`${cfg.time||60} minutes`;
+  document.getElementById('s-instr').textContent=cfg.instr||'';
+  document.getElementById('bar-role').textContent=cfg.role||'Interview';
+  const pl=document.getElementById('s-parts');pl.innerHTML='';
+  (cfg.parts||[]).forEach(p=>{pl.innerHTML+=`<div class="pr"><span class="badge ${p.badge}">${x(p.title)}</span><span class="pr-info">${p.questions.length} questions</span><span class="pr-time">${x(p.time)}</span></div>`;});
+  const chips=document.getElementById('s-chips');chips.innerHTML='';
+  (cfg.dp||[]).forEach(d=>{chips.innerHTML+=`<div class="dchip"><div class="dcl">${x(d.label)}</div><div class="dcv">${x(d.val)}</div>${d.sub?`<div class="dcs">${x(d.sub)}</div>`:''}</div>`;});
+}
+
+/* ══ NAME ══ */
+function onNm(){document.getElementById('cname').classList.remove('err');document.getElementById('nerr').style.display='none';}
+
+/* ══ START EXAM ══ */
+async function startExam(){
+  const nameEl=document.getElementById('cname');
+  const name=nameEl.value.trim();
+  if(name.split(' ').filter(w=>w).length<2){
+    nameEl.classList.add('err');document.getElementById('nerr').style.display='block';nameEl.focus();return;
+  }
+  const btn=document.getElementById('start-btn');btn.disabled=true;btn.textContent='Starting…';
+  candName=name;started=true;saveLS();
+  show('scr-exam');renderExam();startTimer();window.scrollTo(0,0);
+}
+
+/* ══ RENDER EXAM ══ */
+function renderExam(){
+  const el=document.getElementById('e-qs');el.innerHTML='';
+  (cfg.parts||[]).forEach(part=>{
+    const div=document.createElement('div');
+    let h=`<div class="pdiv"><span class="badge ${part.badge}">${x(part.title)}</span><div class="pline"></div><span style="font-size:12px;color:var(--mu)">${x(part.time)}</span></div>`;
+    part.questions.forEach((q,qi)=>{
+      const saved=answers[q.id]||'';
+      h+=`<div class="qbl"><div class="qhdr"><div class="qn">${qi+1}</div><div class="qtxt">${x(q.text)}</div></div><textarea class="ata ${saved.trim().length>10?'filled':''}" id="ans-${q.id}" placeholder="Type your answer here…" oninput="onAns('${q.id}',this)" ${submitted?'disabled':''}>${x(saved)}</textarea></div>`;
+    });
+    div.innerHTML=h;el.appendChild(div);
+  });
+  updateProg();
+  if(submitted){
+    document.getElementById('done-banner').style.display='block';
+    document.getElementById('done-name').textContent=candName;
+    document.getElementById('sub-area').style.display='none';
+  }
+}
+function onAns(id,ta){answers[id]=ta.value;ta.classList.toggle('filled',ta.value.trim().length>10);updateProg();saveLS();}
+function updateProg(){
+  const total=(cfg.parts||[]).reduce((a,p)=>a+p.questions.length,0);
+  const done=(cfg.parts||[]).reduce((a,p)=>a+p.questions.filter(q=>(answers[q.id]||'').trim().length>10).length,0);
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('prog-fil').style.width=pct+'%';
+  document.getElementById('prog-lbl').textContent=`${done} / ${total}`;
+}
+
+/* ══ TIMER ══ */
+function startTimer(){
+  const el=document.getElementById('timer');el.style.display='block';
+  function tick(){
+    if(submitted){clearInterval(timerInt);return;}
+    secsLeft=Math.max(0,secsLeft-1);saveLS();
+    const mn=Math.floor(secsLeft/60),sc=secsLeft%60;
+    el.textContent=`${String(mn).padStart(2,'0')}:${String(sc).padStart(2,'0')}`;
+    if(secsLeft<=300)el.classList.add('warn');
+    if(secsLeft===60)toast('1 minute remaining!');
+    if(secsLeft===0){clearInterval(timerInt);confirmSub();}
+  }
+  tick();timerInt=setInterval(tick,1000);
+}
+
+/* ══ SUBMIT ══ */
+function openModal(){
+  const total=(cfg.parts||[]).reduce((a,p)=>a+p.questions.length,0);
+  const done=(cfg.parts||[]).reduce((a,p)=>a+p.questions.filter(q=>(answers[q.id]||'').trim().length>10).length,0);
+  const ua=total-done;
+  document.getElementById('modal-b').innerHTML=ua>0?`You have <strong>${ua} unanswered question${ua>1?'s':''}</strong>. Once submitted, you cannot make changes.`:"All questions answered. Once submitted, you cannot make changes.";
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+
+async function confirmSub(){
+  document.getElementById('modal').style.display='none';
+  submitted=true;clearInterval(timerInt);
+  document.getElementById('timer').style.display='none';
+  document.getElementById('done-banner').style.display='block';
+  document.getElementById('done-name').textContent=candName;
+  document.getElementById('sub-area').style.display='none';
+  document.querySelectorAll('.ata').forEach(ta=>ta.disabled=true);
+  saveLS();
+  toast('Submitting…');
+
+  // Save submission to GitHub
+  if(hasCreds()){
+    try{
+      const {content,sha}=await ghGet('submissions.json');
+      const allSubs=Array.isArray(content)?content:[];
+      allSubs.push({
+        id:'sub-'+Date.now(),
+        candidateName:candName,
+        submittedAt:new Date().toISOString(),
+        answers,scores:{},aiFeedback:{}
+      });
+      await ghWrite('submissions.json',allSubs,sha,'New submission: '+candName);
+      toast('Submitted successfully!');
+    }catch(e){
+      console.error('Submit failed',e);
+      toast('Saved locally. Please refresh and try submitting again.');
+    }
+  }
+  window.scrollTo(0,0);
+}
+
+/* ══ UTILS ══ */
+function x(s){if(!s)return'';return String(s).replace(/&(?!amp;|lt;|gt;|quot;)/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400);}
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+
+/* ══ INIT ══ */
+async function init(){
+  loadCreds();loadLS();
+  if(!hasCreds()){
+    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:18px;font-weight:600;margin-bottom:12px;color:var(--t)">Not yet configured</div><div style="font-size:14px;color:var(--mu);max-width:400px;line-height:1.8">The admin needs to open admin.html, complete the Setup tab, then upload both files to GitHub. Once done, this link will work for all candidates.</div></div>`;
+    return;
+  }
+  try{
+    await loadCfg();
+  }catch(e){
+    document.getElementById('scr-load').innerHTML=`<div class="ld-wrap"><div style="font-size:14px;color:var(--rdc)">Could not load assignment. Please refresh the page.</div></div>`;
+    return;
+  }
+  if(submitted){show('scr-exam');renderExam();return;}
+  if(started&&secsLeft>0){show('scr-exam');renderExam();startTimer();return;}
+  renderStart();show('scr-start');
+}
+
+init();
+</script>
+</body>
+</html>

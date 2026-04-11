@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SolarSquare — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f6f3;--s:#fff;--bd:#e4e2dc;--bs:#ccc9c0;--t:#1a1916;--mu:#6b6860;--fa:#a8a59e;
+--blb:#eef4ff;--blc:#1e40af;--bld:#bfdbfe;
+--gnb:#f0fdf4;--gnc:#166534;--gnd:#bbf7d0;
+--amb:#fffbeb;--amc:#92400e;--amd:#fde68a;
+--rdb:#fef2f2;--rdc:#991b1b;--rdd:#fecaca;
+--r:10px;--rs:6px;--sh:0 1px 4px rgba(0,0,0,.07)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;font-size:14px;background:var(--bg);color:var(--t);line-height:1.6;min-height:100vh}
+.nav{background:var(--s);border-bottom:1px solid var(--bd);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:50;box-shadow:var(--sh)}
+.brand{font-size:13px;font-weight:600;letter-spacing:-.02em;margin-right:24px}
+.brand span{color:var(--mu);font-weight:400}
+.tabs{display:flex}
+.tab{padding:0 16px;height:52px;display:flex;align-items:center;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--mu);transition:all .15s;white-space:nowrap;user-select:none}
+.tab:hover{color:var(--t)}
+.tab.on{color:var(--t);border-bottom-color:var(--t);font-weight:500}
+.nav-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.sync{font-size:12px;color:var(--mu)}
+.view{display:none;padding:32px 24px 80px}
+.view.on{display:block}
+.wrap{max-width:800px;margin:0 auto}
+.ww{max-width:960px;margin:0 auto}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:var(--r);padding:20px 24px;margin-bottom:16px;box-shadow:var(--sh)}
+.ct{font-size:13px;font-weight:600;margin-bottom:16px}
+.lbl{font-size:11px;color:var(--mu);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.fg{margin-bottom:14px}
+input,textarea{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:9px 12px;font-size:13px;color:var(--t);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+input:focus,textarea:focus{border-color:var(--bs);background:#fff}
+textarea{min-height:68px;resize:vertical;line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--rs);font-size:13px;cursor:pointer;border:1px solid var(--bs);background:var(--s);color:var(--t);font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--bg)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bp{background:var(--t);color:#fff;border-color:var(--t)}
+.bp:hover{opacity:.85;background:var(--t)}
+.bsm{padding:5px 12px;font-size:12px}
+.bd{border-color:var(--rdd);color:var(--rdc);background:transparent}
+.bd:hover{background:var(--rdb)}
+.badge{display:inline-flex;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600}
+.bbl{background:var(--blb);color:var(--blc);border:1px solid var(--bld)}
+.bgn{background:var(--gnb);color:var(--gnc);border:1px solid var(--gnd)}
+.bam{background:var(--amb);color:var(--amc);border:1px solid var(--amd)}
+.dp-row{display:grid;grid-template-columns:1fr 1fr 1.4fr 36px;gap:8px;align-items:end;margin-bottom:8px}
+.add-d{border:1px dashed var(--bs);border-radius:var(--rs);padding:9px;text-align:center;font-size:12px;color:var(--mu);cursor:pointer;margin-top:6px;transition:all .15s}
+.add-d:hover{background:var(--bg);color:var(--t)}
+.qbl{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:14px;margin-bottom:10px}
+.qrw{display:flex;gap:10px;align-items:flex-start}
+.qn{min-width:24px;height:24px;border-radius:50%;border:1px solid var(--bs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mu);flex-shrink:0;margin-top:2px;font-family:'DM Mono',monospace}
+.id-ta{background:var(--gnb)!important;border-color:var(--gnd)!important;color:var(--gnc)!important}
+.ph{font-size:20px;font-weight:600;letter-spacing:-.03em;margin-bottom:4px}
+.ps{font-size:13px;color:var(--mu);margin-bottom:24px}
+.phd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
+
+/* SETUP */
+.setup-card{background:var(--s);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:0;box-shadow:var(--sh)}
+.step{display:flex;gap:20px;padding:24px;border-bottom:1px solid var(--bd)}
+.step:last-child{border:none}
+.snum{width:34px;height:34px;border-radius:50%;background:var(--t);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;margin-top:1px;transition:background .3s}
+.snum.ok{background:var(--gnc)}
+.stit{font-size:15px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+.sdsc{font-size:13px;color:var(--mu);line-height:1.85}
+.sdsc strong{color:var(--t);font-weight:500}
+.sdsc a{color:var(--blc);text-decoration:none;font-weight:500}
+.sdsc a:hover{text-decoration:underline}
+.sdsc code{background:rgba(0,0,0,.06);padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;color:var(--t)}
+.inp-row{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.inp-wide{flex:1;min-width:220px;font-family:'DM Mono',monospace;font-size:12px}
+.st-ok{font-size:13px;color:var(--gnc);font-weight:500}
+.st-err{font-size:13px;color:var(--rdc)}
+.st-mu{font-size:13px;color:var(--mu)}
+.highlight-box{background:var(--gnb);border:1px solid var(--gnd);border-radius:var(--rs);padding:14px 18px;margin-top:14px;font-size:13px;color:var(--gnc);line-height:2}
+.highlight-box code{font-family:'DM Mono',monospace;font-size:12px;background:rgba(0,0,0,.06);padding:2px 6px;border-radius:3px}
+
+/* REVIEW */
+.rev-lay{display:grid;grid-template-columns:270px 1fr;gap:16px;align-items:start}
+.ci{background:var(--s);border:1px solid var(--bd);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s}
+.ci:hover{border-color:var(--bs)}
+.ci.on{border-color:var(--t);background:var(--bg)}
+.av{width:36px;height:36px;border-radius:50%;background:var(--blb);border:1px solid var(--bld);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--blc);flex-shrink:0}
+.rb{background:var(--s);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh)}
+.rh{background:var(--bg);border-bottom:1px solid var(--bd);padding:12px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rq{font-size:13px;font-weight:500;flex:1;line-height:1.4;min-width:160px}
+.rbdy{padding:16px}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.ap{border-radius:var(--rs);padding:12px 14px}
+.apl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.apc{background:var(--bg);border:1px solid var(--bd)}.apc .apl{color:var(--mu)}
+.api{background:var(--gnb);border:1px solid var(--gnd)}.api .apl{color:var(--gnc)}
+.apt{font-size:13px;line-height:1.6}.api .apt{color:var(--gnc)}
+.noans{font-style:italic;color:var(--fa);font-size:13px}
+.srow{display:flex;align-items:center;gap:8px;padding:10px 0 0;border-top:1px solid var(--bd);flex-wrap:wrap}
+.sbts{display:flex;gap:6px}
+.sb{padding:4px 13px;border-radius:var(--rs);font-size:12px;cursor:pointer;border:1px solid var(--bs);background:var(--s);color:var(--mu);font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s}
+.sb.ss{background:var(--gnb);border-color:var(--gnd);color:var(--gnc)}
+.sb.sp{background:var(--amb);border-color:var(--amd);color:var(--amc)}
+.sb.sm{background:var(--rdb);border-color:var(--rdd);color:var(--rdc)}
+.aib{margin-top:12px;background:var(--blb);border:1px solid var(--bld);border-radius:var(--rs);padding:12px 14px}
+.ail{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--blc);margin-bottom:5px}
+.ait{font-size:13px;line-height:1.6;color:var(--blc)}
+.dots span{width:4px;height:4px;border-radius:50%;background:currentColor;display:inline-block;animation:blink 1.2s infinite;margin:0 2px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.15}40%{opacity:1}}
+.scg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sc{border-radius:var(--rs);padding:14px;text-align:center}
+.sc-s{background:var(--gnb);border:1px solid var(--gnd)}.sc-p{background:var(--amb);border:1px solid var(--amd)}.sc-m{background:var(--rdb);border:1px solid var(--rdd)}
+.scl{font-size:11px;font-weight:500;margin-bottom:4px}
+.sc-s .scl{color:var(--gnc)}.sc-p .scl{color:var(--amc)}.sc-m .scl{color:var(--rdc)}
+.scn{font-size:26px;font-weight:600}
+.sc-s .scn{color:var(--gnc)}.sc-p .scn{color:var(--amc)}.sc-m .scn{color:var(--rdc)}
+.prog-h{display:flex;align-items:center;gap:10px}
+.pbar{flex:1;height:4px;background:var(--bd);border-radius:2px}
+.pfil{height:100%;border-radius:2px;transition:width .3s}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--t);color:#fff;padding:10px 20px;border-radius:var(--r);font-size:13px;font-weight:500;transition:transform .3s;z-index:999;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(max-width:700px){.g2,.g3,.ag,.scg,.rev-lay{grid-template-columns:1fr}.dp-row{grid-template-columns:1fr 1fr}.nav{padding:0 14px}.view{padding:20px 14px 60px}.tabs{overflow-x:auto}}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<nav class="nav">
+  <div class="brand">SolarSquare <span>Admin</span></div>
+  <div class="tabs">
+    <div class="tab on" onclick="go('setup')" id="tab-setup">Setup</div>
+    <div class="tab" onclick="go('edit')" id="tab-edit">Edit Assignment</div>
+    <div class="tab" onclick="go('review')" id="tab-review">Review Answers</div>
+  </div>
+  <div class="nav-r">
+    <span class="sync" id="sync"></span>
+    <button class="btn bsm bp" onclick="saveAssignment()">Save &amp; Publish</button>
+  </div>
+</nav>
+
+<!-- ══ SETUP ══ -->
+<div class="view on" id="view-setup">
+<div class="wrap">
+  <div class="ph">Setup — takes 5 minutes, done once forever</div>
+  <div class="ps">Uses GitHub to store data. Free, permanent, no credit card.</div>
+  <div class="setup-card">
+
+    <div class="step">
+      <div class="snum" id="sn1">1</div>
+      <div>
+        <div class="stit">Create a GitHub account (if you don't have one)</div>
+        <div class="sdsc">Go to <a href="https://github.com/signup" target="_blank">github.com/signup</a> and create a free account. If you already have one, skip this step.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="snum" id="sn2">2</div>
+      <div>
+        <div class="stit">Create a new repository</div>
+        <div class="sdsc">
+          Go to <a href="https://github.com/new" target="_blank">github.com/new</a><br>
+          · Repository name: <strong>ss-interview</strong><br>
+          · Set it to <strong>Public</strong><br>
+          · Tick <strong>"Add a README file"</strong><br>
+          · Click <strong>Create repository</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="snum" id="sn3">3</div>
+      <div>
+        <div class="stit">Enable GitHub Pages</div>
+        <div class="sdsc">
+          In your new repo → click <strong>Settings</strong> (top menu) → scroll down to <strong>Pages</strong> (left sidebar)<br>
+          · Under "Branch" — select <strong>main</strong> from the dropdown → click <strong>Save</strong><br>
+          · Wait 2 minutes. Your site will be live at <code>https://YOUR-USERNAME.github.io/ss-interview/</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="snum" id="sn4">4</div>
+      <div>
+        <div class="stit">Create a Personal Access Token</div>
+        <div class="sdsc">
+          Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+          · Note: <strong>ss-interview-token</strong><br>
+          · Expiration: <strong>No expiration</strong><br>
+          · Scopes: tick <strong>repo</strong> (the top checkbox — this selects everything under it)<br>
+          · Scroll down → click <strong>Generate token</strong><br>
+          · <strong>Copy the token now</strong> — you won't see it again
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="snum" id="sn5">5</div>
+      <div>
+        <div class="stit">Upload the portal files to your repo</div>
+        <div class="sdsc">
+          In your repo on GitHub → click <strong>Add file → Upload files</strong><br>
+          · Drag all 4 files: <strong>admin.html, candidate.html, submissions.json, config.json</strong><br>
+          · Click <strong>Commit changes</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="snum" id="sn6">6</div>
+      <div>
+        <div class="stit">Enter your GitHub details below</div>
+        <div class="sdsc">Fill in the three fields and click <strong>Save &amp; Test</strong>. If it says Connected, you're done.</div>
+        <div style="margin-top:16px" class="g3">
+          <div class="fg">
+            <div class="lbl">Your GitHub username</div>
+            <input id="gh-user" placeholder="e.g. rajesh-sharma" oninput="saveCreds()">
+          </div>
+          <div class="fg">
+            <div class="lbl">Repository name</div>
+            <input id="gh-repo" placeholder="ss-interview" oninput="saveCreds()">
+          </div>
+          <div class="fg">
+            <div class="lbl">Personal access token</div>
+            <input id="gh-token" placeholder="ghp_xxxxxxxxxxxx" type="password" oninput="saveCreds()">
+          </div>
+        </div>
+        <div class="inp-row">
+          <button class="btn bsm bp" onclick="testAndSave()">Save &amp; Test →</button>
+          <span id="conn-st"></span>
+        </div>
+        <div class="highlight-box" id="links-box" style="display:none">
+          ✓ Connected! Your two permanent links:<br>
+          <code id="link-admin"></code> — bookmark this, never share<br>
+          <code id="link-cand"></code> — share with every candidate
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══ EDIT ══ -->
+<div class="view" id="view-edit">
+<div class="wrap">
+  <div class="phd">
+    <div><div class="ph">Edit assignment</div><div class="ps">Changes go live the moment you Save &amp; Publish</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Assignment basics</div>
+    <div class="g2">
+      <div class="fg"><div class="lbl">Title</div><input id="a-title" value="Growth &amp; Monetisation — Manager Interview"></div>
+      <div class="fg"><div class="lbl">Company</div><input id="a-company" value="SolarSquare Energy"></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><div class="lbl">Time (minutes)</div><input type="number" id="a-time" value="60"></div>
+      <div class="fg"><div class="lbl">City / market</div><input id="a-city" value="Coimbatore"></div>
+      <div class="fg"><div class="lbl">Role</div><input id="a-role" value="Manager, Growth"></div>
+    </div>
+    <div class="fg" style="margin-bottom:0">
+      <div class="lbl">Candidate instructions</div>
+      <textarea id="a-instr">All data you need is in the Data Sheet below. State your assumptions clearly. No slides needed — write answers directly. Spend ~20 min per part. We evaluate your commercial logic, not the polish of your writing.</textarea>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Data sheet</div>
+    <div id="dp-ed"></div>
+    <div class="add-d" onclick="addDP()">+ Add data point</div>
+  </div>
+  <div id="pts-ed"></div>
+  <div class="card">
+    <div class="ct">Add new part</div>
+    <div class="g2">
+      <div class="fg"><div class="lbl">Part title</div><input id="np-t" placeholder="e.g. Part 4 — Retention"></div>
+      <div class="fg"><div class="lbl">Time</div><input id="np-tm" placeholder="e.g. 15 min"></div>
+    </div>
+    <button class="btn bsm" onclick="addPart()">+ Add part</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ REVIEW ══ -->
+<div class="view" id="view-review">
+<div class="ww">
+  <div class="phd">
+    <div><div class="ph">Review answers</div><div class="ps">Select a candidate to review their submission</div></div>
+    <button class="btn bsm" onclick="loadSubs()">↻ Refresh</button>
+  </div>
+  <div id="rev-msg" style="font-size:13px;color:var(--mu);margin-bottom:16px"></div>
+  <div class="rev-lay" id="rev-lay" style="display:none">
+    <div>
+      <div class="card" style="padding:14px 16px">
+        <div class="ct" style="margin-bottom:10px">Submissions</div>
+        <div id="cand-list"></div>
+      </div>
+    </div>
+    <div id="rev-panel"><div style="text-align:center;padding:60px 20px;color:var(--mu);font-size:13px">← Select a candidate</div></div>
+  </div>
+</div>
+</div>
+
+<script>
+/* ══════════════════════════════════
+   GITHUB API HELPERS
+══════════════════════════════════ */
+let GH_USER='', GH_REPO='', GH_TOKEN='';
+
+function saveCreds(){
+  GH_USER=(document.getElementById('gh-user').value||'').trim();
+  GH_REPO=(document.getElementById('gh-repo').value||'').trim();
+  GH_TOKEN=(document.getElementById('gh-token').value||'').trim();
+  try{localStorage.setItem('ss_gh',JSON.stringify({u:GH_USER,r:GH_REPO,t:GH_TOKEN}));}catch(e){}
+}
+function loadCreds(){
+  try{
+    const d=JSON.parse(localStorage.getItem('ss_gh')||'{}');
+    GH_USER=d.u||'';GH_REPO=d.r||'';GH_TOKEN=d.t||'';
+    if(GH_USER)document.getElementById('gh-user').value=GH_USER;
+    if(GH_REPO)document.getElementById('gh-repo').value=GH_REPO;
+    if(GH_TOKEN)document.getElementById('gh-token').value=GH_TOKEN;
+  }catch(e){}
+}
+function hasCreds(){return GH_USER&&GH_REPO&&GH_TOKEN;}
+
+function ghHeaders(){
+  return{'Authorization':'token '+GH_TOKEN,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'};
+}
+async function ghGetFile(path){
+  const r=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`,{headers:ghHeaders()});
+  if(!r.ok)throw new Error('File not found: '+path);
+  const j=await r.json();
+  return{content:JSON.parse(atob(j.content.replace(/\n/g,''))),sha:j.sha};
+}
+async function ghWriteFile(path,content,sha,msg){
+  const body={message:msg||'update '+path,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};
+  if(sha)body.sha=sha;
+  const r=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`,{method:'PUT',headers:ghHeaders(),body:JSON.stringify(body)});
+  if(!r.ok){const e=await r.json();throw new Error(e.message||'Write failed');}
+  const j=await r.json();
+  return j.content.sha;
+}
+
+/* ══════════════════════════════════
+   TEST + SHOW LINKS
+══════════════════════════════════ */
+async function testAndSave(){
+  saveCreds();
+  if(!hasCreds()){setCS('Fill in all three fields','err');return;}
+  setCS('Testing…','mu');
+  try{
+    await ghGetFile('config.json');
+    setCS('✓ Connected!','ok');
+    markOK(6);
+    showLinks();
+    loadAssignment();
+  }catch(e){
+    if(e.message.includes('File not found')){
+      setCS('✗ Files not found — did you upload all 4 files in Step 5?','err');
+    }else if(e.message.includes('401')||e.message.includes('Bad credentials')){
+      setCS('✗ Token is wrong — re-generate it in GitHub and paste again','err');
+    }else{
+      setCS('✗ '+e.message.slice(0,80),'err');
+    }
+  }
+}
+function setCS(m,t){const el=document.getElementById('conn-st');el.textContent=m;el.className=t==='ok'?'st-ok':t==='err'?'st-err':'st-mu';}
+function markOK(n){const el=document.getElementById('sn'+n);if(el){el.textContent='✓';el.style.background='var(--gnc)';}}
+function showLinks(){
+  const base=`https://${GH_USER}.github.io/${GH_REPO}`;
+  document.getElementById('links-box').style.display='block';
+  document.getElementById('link-admin').textContent=base+'/admin.html';
+  document.getElementById('link-cand').textContent=base+'/candidate.html';
+}
+
+/* ══════════════════════════════════
+   ASSIGNMENT DATA
+══════════════════════════════════ */
+const DP0=[
+  {label:"City profile",val:"Coimbatore, Tamil Nadu",sub:"Pop. ~21L city · ~35L district"},
+  {label:"Economy",val:"Industrial + residential",sub:"Textile mills, SME manufacturing, upper-mid income"},
+  {label:"Avg monthly electricity bill",val:"₹2,200 – ₹3,500",sub:"Residential (500+ units/month)"},
+  {label:"TN tariff (above 500 units)",val:"₹6.5 / unit",sub:"TANGEDCO domestic slab (2024)"},
+  {label:"Solar irradiation",val:"5.5 – 6.0 kWh/m²/day",sub:"Among India's highest; suitable year-round"},
+  {label:"PM Surya Ghar subsidy (3 kW)",val:"₹78,000",sub:"Central govt. scheme, valid FY 2025"},
+  {label:"Competitor landscape",val:"2–3 local installers",sub:"No major pan-India brand currently present"},
+  {label:"Competitor price (3 kW)",val:"₹1.05 – ₹1.20 lakh",sub:"Post-subsidy; quality perception varies"},
+  {label:"SolarSquare cost (3 kW)",val:"~₹95,000",sub:"Incl. install, wiring, net-metering support"},
+  {label:"Customer payback period",val:"4.5 – 5.5 years",sub:"At current tariff + irradiation levels"},
+  {label:"Typical BTL channels",val:"RWA events, hardware stores, EMI camps",sub:"Tamil-language preference noted"},
+  {label:"SolarSquare brand awareness",val:"Near zero",sub:"No prior operations in Tamil Nadu"},
+];
+const PT0=[
+  {id:"p1",title:"Part 1 — Market entry decision",badge:"bbl",time:"20 min",questions:[
+    {id:"q1-1",text:"From the data above, identify the top 3 factors that most strongly support a Go decision. Rank them and explain why each matters.",ideal:"(1) High solar irradiation (5.5–6 kWh/m²) → strong ROI, short payback. (2) High tariff (₹6.5/unit) → large savings delta. (3) No pan-India competitor → first-mover advantage. Candidate must link each to a business outcome, not just name the metric."},
+    {id:"q1-2",text:"Identify the single biggest risk of entering Coimbatore. What would you need to validate before committing resources?",ideal:"Biggest risk: near-zero brand awareness in Tamil-speaking market with local installer incumbents. Validate: (a) willingness-to-pay in target income band, (b) TANGEDCO subsidy processing speed, (c) Tamil-speaking sales/install staff availability."},
+    {id:"q1-3",text:"The data shows no major pan-India brand is present yet. Does that make entry more attractive or raise a concern? Argue both sides, then take a position.",ideal:"Attractive: first-mover pricing window, brand-building opportunity. Concern: local brands may serve market adequately. Strong candidate takes a clear position and defends it. Fence-sitters score lower."},
+    {id:"q1-4",text:"Final call: Go or No-Go for Coimbatore? State your decision and the one number from the data sheet that most influenced it.",ideal:"Go. Anchor: ₹6.5/unit tariff or 5.5–6 kWh/m² irradiation — drives payback to <5.5 yrs vs 6–7 yr national average. Red flag: citing brand awareness as the deciding number."},
+  ]},
+  {id:"p2",title:"Part 2 — Pricing strategy (3 kW plant)",badge:"bgn",time:"20 min",questions:[
+    {id:"q2-1",text:"Using cost, competitor price range, and subsidy data, calculate gross margin % at: ₹1.05L, ₹1.15L, and ₹1.25L. Show your working.",ideal:"Cost = ₹95K. At ₹1.05L: margin = 9.5%. At ₹1.15L: 17.4%. At ₹1.25L: 24.0%. Strong: notes 9.5% is thin for new market; 17–24% more sustainable."},
+    {id:"q2-2",text:"Coimbatore has an industrial SME base alongside residential customers. Would you charge different prices for these segments, or a single price? What's the commercial logic?",ideal:"Different prices. SMEs: higher consumption, faster payback, ROI-literate → pay premium. Residential: price-sensitive, subsidy-driven. Segmented pricing: residential ₹1.10–1.15L, SME 10–15% premium per kW."},
+    {id:"q2-3",text:"SolarSquare is a new entrant with near-zero brand awareness. How should that affect pricing — penetration, at-par, or premium? Justify with one specific reason.",ideal:"At-par or slight penetration (₹1.10–1.15L). Not deep penetration — signals quality risk. Not premium — brand hasn't earned it. Must tie price to a specific value prop (e.g. 5-year monitoring, faster TANGEDCO support)."},
+    {id:"q2-4",text:"Final answer: recommended post-subsidy price for a 3 kW plant in Coimbatore. In one sentence each, explain how you've balanced growth vs profitability.",ideal:"₹1.10–1.15 lakh. Growth: at-par lowers barrier for first 50–100 installs to build word-of-mouth. Profitability: 15–17% margin covers city-launch opex; breakeven in 6–9 months at 30–40 installs/month."},
+  ]},
+  {id:"p3",title:"Part 3 — BTL channel evaluation",badge:"bam",time:"20 min",questions:[
+    {id:"q3-1",text:"List 4 metrics to evaluate BTL effectiveness — at least one leading, one lagging indicator. Define each specifically.",ideal:"Leading: (1) Lead-to-site-visit rate per event (target >15%). (2) Cost per qualified lead (target <₹2,000). Lagging: (3) BTL-attributed install rate within 60 days. (4) BTL CAC vs digital CAC at 90 days."},
+    {id:"q3-2",text:"10 RWA events, ₹3L spend, 8 leads → site visits, 2 → installs at ₹1.15L each (~₹20K margin each). Calculate ROI. Acceptable at this stage? Why?",ideal:"Contribution = ₹40K. Spend = ₹3L. Net = −₹2.6L. ROI = −86.7%. Strong: ACCEPTABLE for a pilot — CAC compresses as awareness builds, LTV not captured, metric at pilot stage is lead quality trend not absolute ROI."},
+    {id:"q3-3",text:"What is your clearest early signal — within 3 weeks — that this channel is worth scaling? Be specific.",ideal:"Site-visit conversion rate from BTL leads >25% within first 3 events. Means 1 in 4 interested people schedule a visit. Secondary: at least 1 install from first 3 events. Weak: 'more leads' or 'positive feedback'."},
+    {id:"q3-4",text:"Customers here prefer Tamil-language communication. Name one tactical adjustment to BTL and the metric to confirm it's working.",ideal:"Adjustment: Tamil-speaking brand promoters, all collateral and WhatsApp follow-ups in Tamil. Metric: compare lead-to-visit conversion rate Tamil-first vs mixed-language outreach across matched events."},
+  ]},
+];
+
+let S={dp:JSON.parse(JSON.stringify(DP0)),parts:JSON.parse(JSON.stringify(PT0)),title:'Growth &amp; Monetisation — Manager Interview',company:'SolarSquare Energy',time:'60',city:'Coimbatore',role:'Manager, Growth',instr:'All data you need is in the Data Sheet below. State your assumptions clearly. No slides needed — write answers directly. Spend ~20 min per part. We evaluate your commercial logic, not the polish of your writing.'};
+let configSHA='';
+
+async function loadAssignment(){
+  if(!hasCreds())return;
+  setSY('Loading…');
+  try{
+    const {content,sha}=await ghGetFile('config.json');
+    if(content&&content.title){S=content;applyF();renderDP();renderPts();}
+    configSHA=sha;
+    setSY('Loaded ✓');
+  }catch(e){setSY('');console.warn(e);}
+}
+async function saveAssignment(){
+  if(!hasCreds()){toast('Complete Setup tab first');go('setup');return;}
+  syncF();setSY('Saving…');
+  try{
+    configSHA=await ghWriteFile('config.json',S,configSHA,'Update assignment config');
+    setSY('Saved & published ✓');
+    toast('Assignment published to all candidates!');
+  }catch(e){setSY('');toast('Save failed: '+e.message.slice(0,60));}
+}
+function syncF(){S.title=gv('a-title');S.company=gv('a-company');S.time=gv('a-time');S.city=gv('a-city');S.role=gv('a-role');S.instr=gv('a-instr');}
+function applyF(){sv('a-title',S.title);sv('a-company',S.company);sv('a-time',S.time);sv('a-city',S.city);sv('a-role',S.role);sv('a-instr',S.instr);}
+function gv(id){const e=document.getElementById(id);return e?e.value:'';}
+function sv(id,v){const e=document.getElementById(id);if(e)e.value=v||'';}
+function setSY(m){document.getElementById('sync').textContent=m;}
+
+/* ══ EDIT RENDER ══ */
+function renderDP(){
+  const el=document.getElementById('dp-ed');el.innerHTML='';
+  S.dp.forEach((dp,i)=>{
+    const row=document.createElement('div');row.className='dp-row';
+    row.innerHTML=`<div><div class="lbl">Label</div><input value="${x(dp.label)}" onchange="S.dp[${i}].label=this.value"></div><div><div class="lbl">Value</div><input value="${x(dp.val)}" onchange="S.dp[${i}].val=this.value"></div><div><div class="lbl">Sub-note</div><input value="${x(dp.sub||'')}" onchange="S.dp[${i}].sub=this.value"></div><div style="padding-top:18px"><button class="btn bsm bd" onclick="S.dp.splice(${i},1);renderDP()">✕</button></div>`;
+    el.appendChild(row);
+  });
+}
+function addDP(){S.dp.push({label:'New metric',val:'—',sub:''});renderDP();}
+function renderPts(){
+  const el=document.getElementById('pts-ed');el.innerHTML='';
+  S.parts.forEach((part,pi)=>{
+    const card=document.createElement('div');card.className='card';
+    let qh='';
+    part.questions.forEach((q,qi)=>{
+      qh+=`<div class="qbl"><div class="qrw"><div class="qn">${qi+1}</div><div style="flex:1"><div class="lbl">Question</div><textarea onchange="S.parts[${pi}].questions[${qi}].text=this.value">${x(q.text)}</textarea><div class="lbl" style="margin-top:8px">Ideal answer <span style="font-weight:400;text-transform:none;letter-spacing:0">(hidden from candidate)</span></div><textarea class="id-ta" onchange="S.parts[${pi}].questions[${qi}].ideal=this.value">${x(q.ideal)}</textarea></div><button class="btn bsm bd" style="margin-left:8px;flex-shrink:0;margin-top:18px" onclick="S.parts[${pi}].questions.splice(${qi},1);renderPts()">✕</button></div></div>`;
+    });
+    card.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap"><span class="badge ${part.badge}">${x(part.title)}</span><div style="flex:1"></div><input style="width:90px;font-size:12px" value="${x(part.time)}" onchange="S.parts[${pi}].time=this.value"><button class="btn bsm bd" onclick="if(confirm('Delete?')){S.parts.splice(${pi},1);renderPts()}">Delete</button></div><div class="fg"><div class="lbl">Part title</div><input value="${x(part.title)}" onchange="S.parts[${pi}].title=this.value;this.closest('.card').querySelector('.badge').textContent=this.value"></div>${qh}<div class="add-d" onclick="S.parts[${pi}].questions.push({id:'q-'+Date.now(),text:'New question',ideal:'Ideal answer'});renderPts()">+ Add question</div>`;
+    el.appendChild(card);
+  });
+}
+function addPart(){
+  const t=document.getElementById('np-t').value.trim();const tm=document.getElementById('np-tm').value.trim();
+  if(!t){toast('Enter a part title');return;}
+  S.parts.push({id:'p'+Date.now(),title:t,badge:'bbl',time:tm||'20 min',questions:[]});
+  document.getElementById('np-t').value='';document.getElementById('np-tm').value='';renderPts();
+}
+
+/* ══ REVIEW ══ */
+let subs=[],scores={},aiFb={},curSub=null,subsSHA='';
+
+async function loadSubs(){
+  if(!hasCreds()){document.getElementById('rev-msg').textContent='Complete Setup tab first.';return;}
+  document.getElementById('rev-msg').textContent='Loading submissions…';
+  document.getElementById('rev-lay').style.display='none';
+  try{
+    const {content,sha}=await ghGetFile('submissions.json');
+    subs=Array.isArray(content)?content:[];
+    subsSHA=sha;
+    subs.sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+    document.getElementById('rev-msg').textContent=subs.length?'':'No submissions yet.';
+    if(subs.length)document.getElementById('rev-lay').style.display='grid';
+    renderCList();
+  }catch(e){document.getElementById('rev-msg').textContent='Error: '+e.message.slice(0,80);}
+}
+function renderCList(){
+  const el=document.getElementById('cand-list');el.innerHTML='';
+  subs.forEach((sub,i)=>{
+    const ini=(sub.candidateName||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const dt=new Date(sub.submittedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const d=document.createElement('div');d.className='ci';d.id='ci-'+i;d.onclick=()=>selCand(sub,i);
+    d.innerHTML=`<div class="av">${ini}</div><div><div style="font-size:13px;font-weight:500">${x(sub.candidateName)}</div><div style="font-size:11px;color:var(--mu)">${dt}</div></div>`;
+    el.appendChild(d);
+  });
+}
+function selCand(sub,idx){
+  curSub=sub;scores=sub.scores||{};aiFb=sub.aiFeedback||{};
+  document.querySelectorAll('.ci').forEach(e=>e.classList.remove('on'));
+  const it=document.getElementById('ci-'+idx);if(it)it.classList.add('on');
+  renderRevPanel();
+}
+function renderRevPanel(){
+  if(!curSub)return;
+  const el=document.getElementById('rev-panel');
+  const ans=curSub.answers||{};
+  let s=0,p=0,m=0;Object.values(scores).forEach(v=>{if(v==='s')s++;else if(v==='p')p++;else if(v==='m')m++;});
+  const total=S.parts.reduce((a,pt)=>a+pt.questions.length,0);const sc=s+p+m;
+  let h=`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px"><div><div style="font-size:15px;font-weight:600">${x(curSub.candidateName)}</div><div style="font-size:12px;color:var(--mu)">${new Date(curSub.submittedAt).toLocaleString('en-IN')}</div></div><button class="btn bsm bp" onclick="runAllAI()" id="ai-all">Run AI review on all →</button></div><div class="scg"><div class="sc sc-s"><div class="scl">Strong</div><div class="scn" id="sum-s">${s}</div></div><div class="sc sc-p"><div class="scl">Partial</div><div class="scn" id="sum-p">${p}</div></div><div class="sc sc-m"><div class="scl">Miss</div><div class="scn" id="sum-m">${m}</div></div></div><div class="prog-h"><div class="pbar"><div class="pfil" id="r-prog" style="width:${total?Math.round(sc/total*100):0}%;background:var(--gnc)"></div></div><div style="font-size:12px;color:var(--mu);white-space:nowrap;margin-left:10px" id="r-lbl">${sc} of ${total} scored</div></div></div>`;
+  S.parts.forEach((part,pi)=>{part.questions.forEach((q,qi)=>{
+    const ca=ans[q.id]||'';const qsc=scores[q.id]||null;const fb=aiFb[q.id]||null;
+    h+=`<div class="rb"><div class="rh"><div class="qn">${qi+1}</div><div class="rq">${x(q.text)}</div><span class="badge ${part.badge}">${x(part.title)}</span></div><div class="rbdy"><div class="ag"><div class="ap apc"><div class="apl">Candidate's answer</div><div class="apt">${ca?x(ca):'<span class="noans">No answer</span>'}</div></div><div class="ap api"><div class="apl">Ideal answer</div><div class="apt">${x(q.ideal)}</div></div></div><div class="srow"><div class="sbts"><button class="sb ${qsc==='s'?'ss':''}" onclick="setScore('${q.id}','s',this)">Strong</button><button class="sb ${qsc==='p'?'sp':''}" onclick="setScore('${q.id}','p',this)">Partial</button><button class="sb ${qsc==='m'?'sm':''}" onclick="setScore('${q.id}','m',this)">Miss</button></div><button class="btn bsm" style="margin-left:auto" onclick="getAI('${q.id}',${pi},${qi})" id="ai-${q.id}">AI review →</button></div><div id="fb-${q.id}">${fb?`<div class="aib"><div class="ail">AI assessment</div><div class="ait">${x(fb)}</div></div>`:''}</div></div></div>`;
+  });});
+  el.innerHTML=h;
+}
+function setScore(qid,val,btn){
+  scores[qid]=val;
+  btn.closest('.sbts').querySelectorAll('.sb').forEach(b=>b.className='sb');
+  btn.className='sb s'+val;
+  updSum();saveScores();
+}
+function updSum(){
+  const total=S.parts.reduce((a,p)=>a+p.questions.length,0);
+  let s=0,p=0,m=0;Object.values(scores).forEach(v=>{if(v==='s')s++;else if(v==='p')p++;else if(v==='m')m++;});
+  const sc=s+p+m;
+  ['s','p','m'].forEach((k,i)=>{const e=document.getElementById('sum-'+k);if(e)e.textContent=[s,p,m][i];});
+  const rp=document.getElementById('r-prog');if(rp)rp.style.width=Math.round(sc/total*100)+'%';
+  const rl=document.getElementById('r-lbl');if(rl)rl.textContent=`${sc} of ${total} scored`;
+}
+async function saveScores(){
+  if(!curSub||!hasCreds())return;
+  try{
+    const idx=subs.findIndex(s=>s.id===curSub.id);
+    if(idx>=0){subs[idx].scores=scores;subs[idx].aiFeedback=aiFb;}
+    subsSHA=await ghWriteFile('submissions.json',subs,subsSHA,'Save scores for '+curSub.candidateName);
+  }catch(e){console.warn('Score save failed',e);}
+}
+async function getAI(qid,pi,qi){
+  const btn=document.getElementById('ai-'+qid);const fbEl=document.getElementById('fb-'+qid);
+  if(!btn||!fbEl)return;
+  btn.disabled=true;btn.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
+  fbEl.innerHTML='<div class="aib"><div class="ail">AI assessment</div><div class="ait"><span class="dots"><span></span><span></span><span></span></span></div></div>';
+  const q=S.parts[pi].questions[qi];
+  const ca=(curSub&&curSub.answers)?(curSub.answers[qid]||'No answer provided'):'No answer provided';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'You are an expert interviewer evaluating a Growth Manager candidate at a solar energy company. Be specific, concise (3–4 sentences). Structure: what they got right → what is missing vs ideal → one-line verdict (Strong / Partial / Miss).',messages:[{role:'user',content:`QUESTION: ${q.text}\n\nCANDIDATE ANSWER: ${ca}\n\nIDEAL ANSWER: ${q.ideal}\n\nAssess the candidate's answer.`}]})});
+    const data=await res.json();
+    const text=(data.content||[]).map(c=>c.text||'').join('');
+    aiFb[qid]=text;
+    fbEl.innerHTML=`<div class="aib"><div class="ail">AI assessment</div><div class="ait">${x(text)}</div></div>`;
+    saveScores();
+  }catch(e){fbEl.innerHTML='<div class="aib"><div class="ail">AI assessment</div><div class="ait">Could not reach AI.</div></div>';}
+  btn.disabled=false;btn.innerHTML='AI review →';
+}
+async function runAllAI(){
+  const btn=document.getElementById('ai-all');if(btn){btn.disabled=true;btn.textContent='Running…';}
+  for(let pi=0;pi<S.parts.length;pi++)for(let qi=0;qi<S.parts[pi].questions.length;qi++){
+    const q=S.parts[pi].questions[qi];
+    if(!aiFb[q.id]){await getAI(q.id,pi,qi);await new Promise(r=>setTimeout(r,600));}
+  }
+  if(btn){btn.disabled=false;btn.textContent='Run AI review on all →';}
+}
+
+/* ══ UTILS ══ */
+function x(s){if(!s)return'';return String(s).replace(/&(?!amp;|lt;|gt;|quot;)/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2500);}
+function go(n){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('tab-'+n).classList.add('on');
+  document.getElementById('view-'+n).classList.add('on');
+  if(n==='review')loadSubs();
+}
+
+/* ══ INIT ══ */
+loadCreds();
+renderDP();renderPts();
+if(hasCreds()){showLinks();loadAssignment();}
+</script>
+</body>
+</html>

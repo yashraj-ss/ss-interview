@@ -196,18 +196,39 @@ async function submitAnswers(candidateName, answers, cfg){
       rows.push(`Q${qi+1} [${part.title}]: ${q.text}\nAnswer: ${answers[q.id]||'(no answer)'}\n`);
     });
   });
-  const r = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json','Accept':'application/json'},
-    body: JSON.stringify({
-      candidate: candidateName,
-      submitted_at: new Date().toLocaleString('en-IN'),
-      answers_formatted: rows.join('\n'),
-      answers_json: JSON.stringify(answers)
-    })
+  return new Promise((resolve, reject) => {
+    try {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `https://formspree.io/f/${FORMSPREE_ID}`;
+      form.target = 'ss-submit-frame';
+      form.style.display = 'none';
+      const fields = {
+        candidate: candidateName,
+        submitted_at: new Date().toLocaleString('en-IN'),
+        answers_formatted: rows.join('\n'),
+        answers_json: JSON.stringify(answers)
+      };
+      Object.entries(fields).forEach(([k,v]) => {
+        const inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = k; inp.value = v;
+        form.appendChild(inp);
+      });
+      let iframe = document.getElementById('ss-submit-frame');
+      if(!iframe){
+        iframe = document.createElement('iframe');
+        iframe.name = 'ss-submit-frame';
+        iframe.id = 'ss-submit-frame';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
+      iframe.onload = () => resolve({ok:true});
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+      setTimeout(() => resolve({ok:true}), 3000);
+    } catch(e) { reject(e); }
   });
-  if(!r.ok) throw new Error('Submit failed');
-  return r.json();
 }
 
 /* ═══ STATE ═══ */
